@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="6f9c8a0b-c9af-48f2-b2fb-f5f2965ea70d" >
+		<http:listener-connection host="0.0.0.0" port="8082" />
+	</http:listener-config>
+	<flow name="conditionFlow" doc:id="c357384f-54ab-4a2a-ad22-fff022a6de41" >
+		<http:listener doc:name="Listener" doc:id="d933ca7a-a769-414f-a9c5-303a41070e22" config-ref="HTTP_Listener_config" path="/con"/>
+		<logger level="INFO" doc:name="Logger" doc:id="abde490e-8604-45d1-841d-e37307df469c" message="#[attributes.headers.'content-length']"/>
+		<choice doc:name="Choice" doc:id="25dc4807-194e-4dc9-8ec2-6aa21a760499" >
+			<when expression="#[attributes.headers.'content-length'==1341]">
+				<logger level="INFO" doc:name="Logger" doc:id="181e8fc4-82ae-4a87-ad20-17df54c96a5e" message="#[attributes.headers.'content-length' ==1341]"/>
+			</when>
+			<when expression="#[attributes.headers.'content-length'&gt;1341]">
+				<logger level="INFO" doc:name="Logger" doc:id="36c21dd7-9823-40f7-8605-4c207ac19e26" message="is to small#[attributes.headers.'content-length' &lt; 1341]"/>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="4e0338c1-d138-4ac7-9c1b-4950a727dde5" message="this msg is too big#[attributes.headers.'content-length' &lt; 1341]"/>
+			</otherwise>
+		</choice>
+	</flow>
+</mule>
